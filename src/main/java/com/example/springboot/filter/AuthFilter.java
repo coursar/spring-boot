@@ -65,6 +65,8 @@ public class AuthFilter extends HttpFilter {
             return; // чтобы не попало в chain.doFilter
         }
 
+        // TODO: check password from DB
+
         // NPE - NullPointerException
         if (!Objects.equals(users.get(login), password)) {
             res.setStatus(401);
