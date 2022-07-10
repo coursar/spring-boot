@@ -10,3 +10,4 @@ services:
       - POSTGRES_USER=app
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=db
+    command: ["postgres", "-c", "log_statement=all"]

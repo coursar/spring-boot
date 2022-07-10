@@ -27,7 +27,7 @@ X-Password: secret
 Content-Type: application/json
 
 {
-  "id": 2,
+  "id": 3,
   "login": "vanya",
   "password": "top-secret"
 }
