@@ -1,32 +1,28 @@
 package com.example.springboot.manager;
 
 import com.example.springboot.entity.UserEntity;
+import com.example.springboot.exception.ForbiddenException;
 import com.example.springboot.exception.UserLoginNotFoundException;
 import com.example.springboot.exception.UserNotFoundException;
 import com.example.springboot.exception.UserPasswordNotMatchesException;
 import com.example.springboot.repository.UserRepository;
 import com.example.springboot.security.Authentication;
+import com.example.springboot.security.Roles;
 import lombok.RequiredArgsConstructor;
 import com.example.springboot.dto.UserRequestDTO;
 import com.example.springboot.dto.UserResponseDTO;
-import com.example.springboot.exception.UserLoginAlreadyRegisteredException;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Component
 @Transactional
 @RequiredArgsConstructor
-public class UserManager { // for admin
+public class UserManager {
     private final UserRepository userRepository; // мне через DI подставят нужный интерфейс
     private final PasswordEncoder passwordEncoder;
     private final Function<UserEntity, UserResponseDTO> userEntityToUserResponseDTO = userEntity -> new UserResponseDTO(
@@ -35,14 +31,22 @@ public class UserManager { // for admin
             userEntity.getRole()
     );
 
-    public List<UserResponseDTO> getAll() {
+    public List<UserResponseDTO> getAll(final Authentication authentication) {
+        if (!authentication.hasRole(Roles.ROLE_ADMIN)) {
+            throw new ForbiddenException(); // 403 @ResponseStatus
+        }
+
          return userRepository.findAll().stream()
                  .map(userEntityToUserResponseDTO)
                  .collect(Collectors.toList())
                  ;
     }
 
-    public UserResponseDTO getById(final long id) {
+    public UserResponseDTO getById(final Authentication authentication, final long id) {
+        if (!authentication.hasRole(Roles.ROLE_ADMIN)) {
+            throw new ForbiddenException(); // 403 @ResponseStatus
+        }
+
         return userRepository.findById(id)
                 // map срабатывает только тогда, когда внутри есть объект
                 .map(userEntityToUserResponseDTO)
@@ -50,7 +54,10 @@ public class UserManager { // for admin
                 ;
     }
 
-    public UserResponseDTO create(final UserRequestDTO requestDTO) {
+    public UserResponseDTO create(final Authentication authentication, final UserRequestDTO requestDTO) {
+        if (!authentication.hasRole(Roles.ROLE_ADMIN)) {
+            throw new ForbiddenException(); // 403 @ResponseStatus
+        }
         // TODO: check login
 
         // TODO:
@@ -67,7 +74,11 @@ public class UserManager { // for admin
         return userEntityToUserResponseDTO.apply(savedEntity);
     }
 
-    public UserResponseDTO update(final UserRequestDTO requestDTO) {
+    public UserResponseDTO update(final Authentication authentication, final UserRequestDTO requestDTO) {
+        if (!authentication.hasRole(Roles.ROLE_ADMIN)) {
+            throw new ForbiddenException(); // 403 @ResponseStatus
+        }
+
         // TODO:
         //  1. JPA нет UPDATE -> getReferenceById + setPassword/setLogin
         //  2. JPQL
@@ -80,7 +91,11 @@ public class UserManager { // for admin
         return userEntityToUserResponseDTO.apply(userEntity);
     }
 
-    public void deleteById(final long id) {
+    public void deleteById(final Authentication authentication, final long id) {
+        if (!authentication.hasRole(Roles.ROLE_ADMIN)) {
+            throw new ForbiddenException(); // 403 @ResponseStatus
+        }
+
         userRepository.deleteById(id);
     }
 

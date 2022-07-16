@@ -10,4 +10,8 @@ import lombok.Value;
 public class Authentication {
     private final long id;
     private final String role;
+
+    public boolean hasRole(final String role) {
+        return this.role.equals(role);
+    }
 }
