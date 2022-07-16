@@ -6,33 +6,35 @@ X-Password: password
 ### users.getById
 GET http://localhost:8080/users/1
 X-Login: vasya
-X-Password: secret
+X-Password: password
 
 ### users.create
 POST http://localhost:8080/users
 X-Login: vasya
-X-Password: secret
+X-Password: password
 Content-Type: application/json
 
 {
   "id": 0,
   "login": "vanya",
-  "password": "secret"
+  "password": "password",
+  "roles": ["ROLE_USER"]
 }
 
 ### users.update
 PUT http://localhost:8080/users
 X-Login: vasya
-X-Password: secret
+X-Password: password
 Content-Type: application/json
 
 {
   "id": 3,
   "login": "vanya",
-  "password": "top-secret"
+  "password": "top-password",
+  "roles": ["ROLE_USER", "ROLE_ADMIN"]
 }
 
 ### users.deleteById
 DELETE http://localhost:8080/users/2
 X-Login: vasya
-X-Password: secret
+X-Password: password

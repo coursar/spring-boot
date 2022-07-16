@@ -4,14 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 
+import java.util.List;
+
 @AllArgsConstructor
 @Value
 @Builder
 public class Authentication {
     private final long id;
-    private final String role;
+    private final List<String> roles;
 
     public boolean hasRole(final String role) {
-        return this.role.equals(role);
+        return roles.contains(role);
     }
 }

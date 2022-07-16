@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -28,7 +29,7 @@ public class UserManager {
     private final Function<UserEntity, UserResponseDTO> userEntityToUserResponseDTO = userEntity -> new UserResponseDTO(
             userEntity.getId(),
             userEntity.getLogin(),
-            userEntity.getRole()
+            userEntity.getRoles()
     );
 
     public List<UserResponseDTO> getAll(final Authentication authentication) {
@@ -68,7 +69,7 @@ public class UserManager {
                 0,
                 requestDTO.getLogin(),
                 passwordEncoder.encode(requestDTO.getPassword()),
-                requestDTO.getRole()
+                requestDTO.getRoles()
         );
         final UserEntity savedEntity = userRepository.save(userEntity);
         return userEntityToUserResponseDTO.apply(savedEntity);
@@ -86,7 +87,7 @@ public class UserManager {
         userEntity.setLogin(requestDTO.getLogin());
         userEntity.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
         // TODO: после изменения create всегда смотрите на update
-        userEntity.setRole(requestDTO.getRole());
+        userEntity.setRoles(requestDTO.getRoles());
 
         return userEntityToUserResponseDTO.apply(userEntity);
     }
@@ -126,7 +127,7 @@ public class UserManager {
         //  3. build()
         final Authentication authentication = Authentication.builder()
                 .id(userEntity.getId())
-                .role(userEntity.getRole())
+                .roles(new ArrayList<>(userEntity.getRoles()))
                 .build();
 
         return authentication;
