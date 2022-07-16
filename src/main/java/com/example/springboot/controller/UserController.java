@@ -3,6 +3,7 @@ package com.example.springboot.controller;
 import com.example.springboot.dto.UserRequestDTO;
 import com.example.springboot.dto.UserResponseDTO;
 import com.example.springboot.manager.UserManager;
+import com.example.springboot.security.Authentication;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +15,7 @@ public class UserController {
     private final UserManager manager;
 
     @GetMapping("/users")
-    public List<UserResponseDTO> getAll() {
+    public List<UserResponseDTO> getAll(@RequestAttribute final Authentication authentication) {
         final List<UserResponseDTO> responseDTO = manager.getAll();
         return responseDTO;
     }

@@ -12,21 +12,12 @@ import javax.servlet.http.HttpFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Map;
-import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class AuthFilter extends HttpFilter {
     private final UserManager userManager;
-
-
-    // TODO: replace with db
-    private final Map<String, String> users = Map.of(
-            "vasya", "secret",
-            "petya", "secret"
-    );
 
     // log - logger
     @Override
@@ -65,18 +56,17 @@ public class AuthFilter extends HttpFilter {
             return; // чтобы не попало в chain.doFilter
         }
 
-        // TODO: check password from DB
-
-        // NPE - NullPointerException
-        if (!Objects.equals(users.get(login), password)) {
+        try {
+            final Authentication authentication = userManager.authenticateByLoginAndPassword(
+                    login,
+                    password
+            );
+            req.setAttribute("authentication", authentication);
+        } catch (RuntimeException e) {
             res.setStatus(401);
             res.getWriter().write("Not authenticated");
             return; // чтобы не попало в chain.doFilter
         }
-
-        // TODO: request достаточно часто используют для передачи через атрибуты доп.значений (например, аутентификации)
-        final Authentication authentication = new Authentication(login);
-        req.setAttribute("authentication", authentication);
 
         chain.doFilter(req, res);
     }

@@ -8,4 +8,5 @@ import lombok.Data;
 public class UserResponseDTO {
     private long id;
     private String login;
+    private String role;
 }

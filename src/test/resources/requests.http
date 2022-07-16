@@ -1,7 +1,7 @@
 ### users.getAll
 GET http://localhost:8080/users
 X-Login: vasya
-X-Password: secret
+X-Password: password
 
 ### users.getById
 GET http://localhost:8080/users/1
