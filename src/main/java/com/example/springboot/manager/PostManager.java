@@ -1,12 +1,15 @@
 package com.example.springboot.manager;
 
+import com.example.springboot.dto.AuthorDTO;
 import com.example.springboot.dto.GeoDTO;
 import com.example.springboot.dto.PostRequestDTO;
 import com.example.springboot.dto.PostResponseDTO;
 import com.example.springboot.entity.GeoEmbeddable;
 import com.example.springboot.entity.PostEntity;
+import com.example.springboot.entity.UserEntity;
 import com.example.springboot.exception.PostNotFoundException;
 import com.example.springboot.repository.PostRepository;
+import com.example.springboot.repository.UserRepository;
 import com.example.springboot.security.Authentication;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -22,8 +25,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PostManager {
     private final PostRepository postRepository; // мне через DI подставят нужный интерфейс
+    private final UserRepository userRepository;
+
     private final Function<PostEntity, PostResponseDTO> postEntityToPostResponseDTO = postEntity -> new PostResponseDTO(
             postEntity.getId(),
+            new AuthorDTO(postEntity.getAuthor().getId(), postEntity.getAuthor().getLogin()),
+            // Optional.of(postEntity.getAuthor()).map(o -> new AuthorDTO(o.getId(), o.getLogin())).get(),
             postEntity.getContent(),
             postEntity.getTags(),
             // postEntity.getGeo() != null ? new GeoDTO(postEntity.getGeo().getLat(), postEntity.getGeo().getLng()) : null
@@ -49,8 +56,11 @@ public class PostManager {
     }
 
     public PostResponseDTO create(final Authentication authentication, final PostRequestDTO requestDTO) {
+        final UserEntity userEntity = userRepository.getReferenceById(authentication.getId());
+
         final PostEntity postEntity = new PostEntity(
                 0,
+                userEntity,
                 requestDTO.getContent(),
                 requestDTO.getTags(),
                 Optional.ofNullable(requestDTO.getGeo())
@@ -62,9 +72,7 @@ public class PostManager {
     }
 
     public PostResponseDTO update(final Authentication authentication, final PostRequestDTO requestDTO) {
-        // TODO:
-        //  1. JPA нет UPDATE -> getReferenceById + setPassword/setLogin
-        //  2. JPQL
+        // TODO: проверять, что пользователь обновляет именно свою запись
         final PostEntity postEntity = postRepository.getReferenceById(requestDTO.getId());
         postEntity.setContent(requestDTO.getContent());
         postEntity.setTags(requestDTO.getTags());
@@ -77,6 +85,7 @@ public class PostManager {
     }
 
     public void deleteById(final Authentication authentication, final long id) {
+        // TODO: проверять, что пользователь обновляет именно свою запись
         postRepository.deleteById(id);
     }
 }
