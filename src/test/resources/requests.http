@@ -38,3 +38,50 @@ Content-Type: application/json
 DELETE http://localhost:8080/users/2
 X-Login: vasya
 X-Password: password
+
+### posts.getAll
+GET http://localhost:8080/posts
+X-Login: vasya
+X-Password: password
+
+### posts.getById
+GET http://localhost:8080/posts/1
+X-Login: vasya
+X-Password: password
+
+### posts.create
+POST http://localhost:8080/posts
+X-Login: vasya
+X-Password: password
+Content-Type: application/json
+
+{
+  "id": 0,
+  "content": "Demo Post",
+  "tags": ["demo", "fun"],
+  "geo": {
+    "lat": 55.00,
+    "lng": 45.00
+  }
+}
+
+### posts.update
+PUT http://localhost:8080/posts
+X-Login: vasya
+X-Password: password
+Content-Type: application/json
+
+{
+  "id": 2,
+  "content": "Demo Post (updated)",
+  "tags": ["demo", "fun"],
+  "geo": {
+    "lat": 55.00,
+    "lng": 45.00
+  }
+}
+
+### posts.deleteById
+DELETE http://localhost:8080/posts/2
+X-Login: vasya
+X-Password: password
