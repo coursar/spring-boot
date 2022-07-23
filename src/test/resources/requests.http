@@ -16,9 +16,9 @@ Content-Type: application/json
 
 {
   "id": 0,
-  "login": "vanya",
+  "login": "vadmin",
   "password": "password",
-  "roles": ["ROLE_USER"]
+  "roles": ["ROLE_ADMIN"]
 }
 
 ### users.update
@@ -58,7 +58,7 @@ Content-Type: application/json
 {
   "id": 0,
   "content": "Demo Post",
-  "tags": ["demo", "fun"],
+  "tags": ["#demo", "#ёшка"],
   "geo": {
     "lat": 55.00,
     "lng": 45.00
@@ -74,10 +74,10 @@ Content-Type: application/json
 {
   "id": 2,
   "content": "Demo Post (updated)",
-  "tags": ["demo", "fun"],
+  "tags": ["#demo", "#fun"],
   "geo": {
     "lat": 55.00,
-    "lng": 45.00
+    "lng": 450.00
   }
 }
 

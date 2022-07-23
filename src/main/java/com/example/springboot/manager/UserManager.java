@@ -1,5 +1,7 @@
 package com.example.springboot.manager;
 
+import com.example.springboot.dto.UserRequestDTO;
+import com.example.springboot.dto.UserResponseDTO;
 import com.example.springboot.entity.UserEntity;
 import com.example.springboot.exception.ForbiddenException;
 import com.example.springboot.exception.UserLoginNotFoundException;
@@ -9,8 +11,6 @@ import com.example.springboot.repository.UserRepository;
 import com.example.springboot.security.Authentication;
 import com.example.springboot.security.Roles;
 import lombok.RequiredArgsConstructor;
-import com.example.springboot.dto.UserRequestDTO;
-import com.example.springboot.dto.UserResponseDTO;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,10 +37,10 @@ public class UserManager {
             throw new ForbiddenException(); // 403 @ResponseStatus
         }
 
-         return userRepository.findAll().stream()
-                 .map(userEntityToUserResponseDTO)
-                 .collect(Collectors.toList())
-                 ;
+        return userRepository.findAll().stream()
+                .map(userEntityToUserResponseDTO)
+                .collect(Collectors.toList())
+                ;
     }
 
     public UserResponseDTO getById(final Authentication authentication, final long id) {
